@@ -1,0 +1,31 @@
+- name : "Provisioning an ec2 instance on the aws cloud in Mumbai region"
+  hosts : localhost
+
+  vars_files :
+    - ../key.yaml
+
+  tasks : 
+    - name : "Provisioning Ec2 instance"
+      ec2 :
+        key_name : "Mumbai-KP"
+        aws_access_key : "{{id}}"
+        aws_secret_key : "{{secret}}"
+        image : "ami-0ebc1ac48dfd14136"
+        count : 1
+        group_id : "sg-02ebe26c281141e4f"
+        assign_public_ip : yes
+        vpc_subnet_id : "subnet-0e656766"
+        instance_type : "t2.micro"
+        state : present
+        region : "ap-south-1"
+        wait : yes
+        instance_tags :
+          name : web
+      tags : launch       
+         
+        
+- name : "Configuring web server in ec2 instances"
+  hosts : tag_name_web
+  roles :
+    - webserver 
+  tags : webserver
