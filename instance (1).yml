@@ -1,0 +1,31 @@
+- name : "Provisioning an ec2 instance on the aws "
+  hosts : tag_name_web
+
+  vars_files :
+    - /etc/Ansible/secret.yml
+
+  tasks : 
+    - name : "Provisioning Ec2 instance"
+      ec2 :
+        key_name : "awskey"
+        aws_access_key : "{{id}}"
+        aws_secret_key : "{{pass}}"
+        image : "ami-0ebc1ac48dfd14136"
+        count : 1
+        group_id : "sg-19c10765"
+        assign_public_ip : yes
+        vpc_subnet_id : "subnet-0ed37e65"
+        instance_type : "t2.micro"
+        state : present
+        region : "ap-south-1"
+        wait : yes
+        instance_tags :
+          name : web
+      tags : launch       
+         
+        
+- name : "Configuring web server in ec2 instances"
+  hosts : tag_name_web
+  roles :
+    - webserver 
+
